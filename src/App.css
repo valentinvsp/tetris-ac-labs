@@ -2,6 +2,10 @@
   height: 90vh;
   width: 500px;
   background-color: lightblue;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(20, 1fr);
+  gap: 5px;
 }
 
 .container {
@@ -10,4 +14,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.item {
+  grid-row-start: 4;
+  grid-row-end: 5;
+  grid-column-start: 4;
+  grid-column-end: 5;
+  background-color: red;
 }

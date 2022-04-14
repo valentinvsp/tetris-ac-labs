@@ -1,11 +1,18 @@
 import React from "react";
+
+import { GameContainer } from "./components/GameContainer";
+
+import Tetromino from "./Tetromino";
 import "./App.css";
 
 function App() {
   return (
-    <div className="container">
-      <div className="board" />
-    </div>
+    <GameContainer>
+      <div className="board">
+        <div className="item" />
+        <Tetromino />
+      </div>
+    </GameContainer>
   );
 }
 
