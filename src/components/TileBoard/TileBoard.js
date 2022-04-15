@@ -7,8 +7,6 @@ export function TileBoard({ board }) {
 
   board.forEach((row, rowIdx) => {
     row.forEach((val, colIdx) => {
-      if (val === "green") console.log("found green");
-
       tiles.push({
         row: rowIdx + 1,
         col: colIdx + 1,
@@ -17,12 +15,11 @@ export function TileBoard({ board }) {
     });
   });
 
-  console.log(tiles);
-
   return (
     <div className="tile-board">
       {tiles.map(({ row, col, color }) => (
         <div
+          key={`row-${row}-col-${col}`}
           style={{
             gridRowStart: row,
             gridRowEnd: row + 1,
@@ -30,7 +27,7 @@ export function TileBoard({ board }) {
             gridColumnEnd: col + 1,
             background: color,
           }}
-        ></div>
+        />
       ))}
     </div>
   );
