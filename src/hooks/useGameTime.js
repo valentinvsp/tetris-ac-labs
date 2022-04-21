@@ -32,6 +32,7 @@ export function useGameTime({ onTick: handleTick, speed }) {
   useEffect(() => {
     if (!timeInterval.current) return;
 
+    console.log('test');
     stopTime();
     startTime();
   }, [startTime, stopTime, speed]);
