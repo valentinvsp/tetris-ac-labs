@@ -9,11 +9,29 @@ const DIRECTION = {
   right: "RIGHT",
 };
 
+const opposite = (direction) => {
+  const result =
+    direction === DIRECTION.up
+      ? DIRECTION.down
+      : direction === DIRECTION.down
+      ? DIRECTION.up
+      : direction === DIRECTION.left
+      ? DIRECTION.right
+      : direction === DIRECTION.right
+      ? DIRECTION.left
+      : null;
+
+  if (!result) throw new Error(`Could not get opposite of ${direction}`);
+
+  return result;
+};
+
 export const useBoard = () => {
   const [board, setBoard] = useState(getEmptyBoard());
 
   // Q: how about making the player a class instance with a forEachTile method?
   // could also have erase() and paint() methods, which would only need a board to be passed
+  // maybe call it tetromino instead of player? or active tetromino?
   const player = useRef({
     currentPos: { row: 0, column: 5 },
     tetromino: randomTetromino(),
@@ -42,28 +60,42 @@ export const useBoard = () => {
     };
   }, []);
 
-  const updateBoard = () => {
-    // render previous position null
-    forEachTile(player.current, (row, col) => {
-      if (row >= 0) board[row][col] = null;
-    });
+  const attemptMove = useCallback(
+    (direction = DIRECTION.down) => {
+      // render current position null
+      forEachTile(player.current, (row, col) => {
+        board[row][col] = null;
+      });
 
-    movePlayer(DIRECTION.down);
-    const isCollided = checkCollisions(player.current, board);
+      movePlayer(direction);
+      const isCollided = checkCollisions(player.current, board);
 
-    if (isCollided) {
-      // move player back to original position
-      movePlayer(DIRECTION.up);
-    }
+      if (isCollided) {
+        movePlayer(opposite(direction));
+      }
 
-    forEachTile(player.current, (row, column, color) => {
-      board[row][column] = color;
-    });
+      forEachTile(player.current, (row, column, color) => {
+        board[row][column] = color;
+      });
 
-    setBoard([...board]);
-  };
+      if (isCollided && direction === DIRECTION.down) {
+        // reset player
+        player.current = {
+          currentPos: { row: 0, column: 5 },
+          tetromino: randomTetromino(),
+        };
 
-  return [updateBoard, board];
+        forEachTile(player.current, (row, column, color) => {
+          board[row][column] = color;
+        });
+      }
+
+      setBoard([...board]);
+    },
+    [board, movePlayer]
+  );
+
+  return [attemptMove, board];
 };
 
 /**

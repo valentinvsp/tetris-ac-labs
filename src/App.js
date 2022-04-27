@@ -8,14 +8,13 @@ import { useBoard } from "./hooks/useBoard";
 import "./App.css";
 
 function App() {
-
   const [speed, setSpeed] = useState(1000);
 
-  const  [updateBoard, board] = useBoard();
+  const [attemptMove, board] = useBoard();
 
   const onTick = useCallback(() => {
     console.log("tic tic");
-    updateBoard();
+    attemptMove();
   }, []);
 
   const { isRunning, startTime, stopTime } = useGameTime({ onTick, speed });
