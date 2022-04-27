@@ -56,4 +56,34 @@ export class ActiveTetro {
 
     return isCollided;
   }
+
+  rotate(direction) {
+    this.tetromino.shape = rotateMatrix(this.tetromino.shape, direction);
+  }
 }
+
+const rotateMatrix = (matrix, direction = DIRECTION.clockwise) => {
+  if (direction === DIRECTION.clockwise) {
+    const newMatrix = [];
+    matrix.reverse().forEach((line) =>
+      line.forEach((elem, idx) => {
+        if (!newMatrix[idx]) newMatrix[idx] = [];
+        newMatrix[idx].push(elem);
+      })
+    );
+    return newMatrix;
+  }
+
+  if (direction === DIRECTION.counterClockwise) {
+    const newMatrix = [];
+    matrix.forEach((line) =>
+      line.reverse().forEach((elem, idx) => {
+        if (!newMatrix[idx]) newMatrix[idx] = [];
+        newMatrix[idx].push(elem);
+      })
+    );
+    return newMatrix;
+  }
+
+  throw new Error("invalid direction");
+};

@@ -28,6 +28,8 @@ export const DIRECTION = {
   down: "DOWN",
   left: "LEFT",
   right: "RIGHT",
+  clockwise: "CLOCKWISE",
+  counterClockwise: "COUNTER_CLOCKWISE",
 };
 
 export const opposite = (direction) => {

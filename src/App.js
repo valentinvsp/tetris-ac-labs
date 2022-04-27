@@ -11,10 +11,10 @@ import { DIRECTION } from "./utils/utils";
 function App() {
   const [speed, setSpeed] = useState(1000);
 
-  const [attemptMove, board] = useBoard();
+  const { attemptMove, attemptRotate, board, startNewTetro } = useBoard();
 
   const onTick = useCallback(() => {
-    attemptMove();
+    attemptMove(DIRECTION.down);
   }, [attemptMove]);
 
   const { isRunning, startTime, stopTime } = useGameTime({ onTick, speed });
@@ -30,9 +30,17 @@ function App() {
       if (key === "ArrowDown") {
         return attemptMove(DIRECTION.down);
       }
+      if (key === "ArrowUp") {
+        return attemptRotate();
+      }
     },
-    [attemptMove]
+    [attemptMove, attemptRotate]
   );
+
+  const handleStart = () => {
+    startNewTetro();
+    startTime();
+  };
 
   useEffect(() => {
     window.addEventListener("keydown", keyPressHandler);
@@ -46,7 +54,7 @@ function App() {
     <GameContainer>
       <TileBoard board={board} />
       <RightPanel>
-        <button onClick={startTime} disabled={isRunning}>
+        <button onClick={handleStart} disabled={isRunning}>
           START
         </button>
         <button onClick={stopTime} disabled={!isRunning}>

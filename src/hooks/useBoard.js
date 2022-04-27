@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { ActiveTetro } from "../classes/ActiveTetro";
 import { DIRECTION, getEmptyBoard, opposite } from "../utils/utils";
 
@@ -6,10 +6,11 @@ export const useBoard = () => {
   const [board, setBoard] = useState(getEmptyBoard());
   const player = useRef(new ActiveTetro(0, 5));
 
-  useEffect(() => {
+  const startNewTetro = useCallback(() => {
+    player.current = new ActiveTetro(0, 5);
     player.current.paint(board);
-    // TODO -> passing the board in the deps array would make this effect run ad infintum
-  }, []);
+    setBoard([...board]);
+  }, [board]);
 
   const attemptMove = useCallback(
     (direction = DIRECTION.down) => {
@@ -36,5 +37,19 @@ export const useBoard = () => {
     []
   );
 
-  return [attemptMove, board];
+  const attemptRotate = useCallback(() => {
+    player.current.erase(board);
+
+    player.current.rotate(DIRECTION.clockwise);
+    const isCollided = player.current.checkCollisions(board);
+
+    if (isCollided) {
+      player.current.rotate(DIRECTION.counterClockwise);
+    }
+
+    player.current.paint(board);
+    setBoard([...board]);
+  }, [board]);
+
+  return { attemptMove, attemptRotate, board, startNewTetro };
 };
