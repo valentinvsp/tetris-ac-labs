@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 import { GameContainer } from "./components/GameContainer";
 import { RightPanel } from "./components/RightPanel";
@@ -6,6 +6,7 @@ import { TileBoard } from "./components/TileBoard";
 import { useGameTime } from "./hooks/useGameTime";
 import { useBoard } from "./hooks/useBoard";
 import "./App.css";
+import { DIRECTION } from "./utils/utils";
 
 function App() {
   const [speed, setSpeed] = useState(1000);
@@ -13,11 +14,33 @@ function App() {
   const [attemptMove, board] = useBoard();
 
   const onTick = useCallback(() => {
-    console.log("tic tic");
     attemptMove();
-  }, []);
+  }, [attemptMove]);
 
   const { isRunning, startTime, stopTime } = useGameTime({ onTick, speed });
+
+  const keyPressHandler = useCallback(
+    ({ key }) => {
+      if (key === "ArrowLeft") {
+        return attemptMove(DIRECTION.left);
+      }
+      if (key === "ArrowRight") {
+        return attemptMove(DIRECTION.right);
+      }
+      if (key === "ArrowDown") {
+        return attemptMove(DIRECTION.down);
+      }
+    },
+    [attemptMove]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", keyPressHandler);
+
+    return () => {
+      window.removeEventListener("keydown", keyPressHandler);
+    };
+  }, [keyPressHandler]);
 
   return (
     <GameContainer>
